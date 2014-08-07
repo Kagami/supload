@@ -292,7 +292,7 @@ head_etag() {
         return 2
     fi
 
-    etag=`cat "${temp_file}" | egrep -i -w -o "etag: .+" | tr -d '\r' | tr '[:upper:]' '[:lower:]' | sed 's/etag: //g'`
+    etag=`perl -e '$/=undef;$_=<STDIN>;print m#\r\n(?i:etag):\s*((?:W/)?"[^\r]+)#' < "${temp_file}"`
 
     rm -f "${temp_file}"
 
@@ -442,7 +442,7 @@ _upload() {
     fi
 
     # get hash for uploaded file (from response)
-    etag=`cat "${temp_file}" | egrep -i -w -o "etag: .+" | tr -d '\r' | tr '[:upper:]' '[:lower:]' | sed 's/etag: //g'`
+    etag=`perl -e '$/=undef;$_=<STDIN>;print m#\r\n(?i:etag):\s*((?:W/)?"[^\r]+)#' < "${temp_file}"`
 
     if [ -z "$etag" ]; then
         #cat "${temp_file}"
